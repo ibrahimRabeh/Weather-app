@@ -1,0 +1,341 @@
+body{
+    
+  --FontColor: #191919;
+
+    font-family:'Playfair Display',sans-serif;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+  
+}
+#App{
+    width: 90vw;
+    height: 90vh;
+    display: flex;
+    flex-direction: row;
+    
+   
+
+}
+#LeftContainer{
+    flex: 1;
+    
+    display: flex;
+    flex-direction: column;
+    
+   
+}
+#MainInfoContainer{
+    padding-top: 5%; 
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 2fr 1fr 1fr;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 40%;
+   
+
+}
+#SearchContainer{
+    align-items: center;
+    padding-bottom: 5%;
+    flex: 1;
+}
+
+
+
+#SearchContainer input{
+    height: 2rem;
+    border-radius: 5px;
+    border: none;
+    border-bottom: 1px solid var(--FontColor) ;
+    background-color: transparent;
+    font-size: 1rem;
+    font-family: 'Playfair Display',sans-serif;
+    cursor: pointer;
+}
+#SearchContainer input:focus{
+    outline: none;
+    border: 1px solid var(--FontColor);
+}
+#SearchContainer button{
+   
+    --BackgroundColorDark: #288abf;
+    width: fit-content;
+    height: 2rem;
+    border-radius: 5px;
+    background-color: var(--BackgroundColorDark);
+    cursor: pointer;
+}
+#SearchContainer button:hover{
+    
+    animation: fillColorRtoL 0.3s ease-in forwards;
+}
+@keyframes fillColorRtoL{
+    0%{
+        background-color: var(--BackgroundColorDark);
+        
+    }
+    100%{
+        background-color: var(--BackgroundColor);
+        
+    }
+
+}
+#SearchContainer button:active{
+    animation: fillColorLtoR 0.1s ease-in forwards;
+}
+@keyframes fillColorLtoR{
+    0%{
+        background-color: var(--BackgroundColor);
+        
+    }
+    100%{
+        background-color: var(--BackgroundColorDark);
+        
+    }
+
+}
+#City{
+    grid-row: 2/3;
+    font-size: 2em;
+    font-weight: 700;
+}
+
+#Temp{
+
+    flex: 2;
+    font-size: 3em;
+    font-weight: 700;
+    text-align: start;
+}
+#TempAndIconContainer{
+    width: fit-content;
+    grid-row: 1/2;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: left;
+    
+}
+#Icon{
+    flex: 1;
+    width:100px;
+    align-items: start;
+   
+}
+
+#ExtraInfo{
+    grid-row: 3/4;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    text-align: start;
+    flex-wrap: wrap;
+    width: 40%;
+    height: 100%;
+}
+#Time{
+    flex: 1;
+    font-size: 1em;
+    font-weight: 700;
+}
+#Humidity{
+    position: relative;
+    flex: 1;
+    margin-right: 5px;
+    font-size: 1em;
+    font-weight: 700;
+
+}#Humidity::after {
+    content: "";
+        top: 0; 
+    left: 0; 
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out 0s;
+    display: block; 
+
+}
+
+#Humidity:hover::after {
+   
+    
+    content: "Humidity";
+    opacity: 1;
+    font-size: smaller;
+    font-weight: lighter;
+    
+}
+#ChanceOfRain{
+    flex: 1;
+    margin-right: 5px;
+    font-size: 1em;
+    font-weight: 700;
+}
+#ChanceOfRain::after {
+    content: "";
+        top: 0; 
+    left: 0; 
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out 0s;
+    display: block; 
+
+}
+
+#ChanceOfRain:hover::after {
+   
+   
+    content: "Rain Chance"; 
+    opacity: 1;
+    font-size:small;
+    font-weight:500;
+    
+}
+
+
+#RightContainer{
+ 
+    flex: 2;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    justify-content: center;
+    align-items: center;
+
+   
+}
+#HourlyContainer {
+    position: relative;
+    display: flex;
+    overflow-x: auto; 
+    justify-content: space-between; 
+    align-items: center;
+   
+    border-radius: 10%;
+    width: 100%; 
+    max-width: 100%;
+    box-sizing: border-box; 
+}
+#HourlyContainer::-webkit-scrollbar{
+    display: none;
+    
+}
+.DescriptionContainer{
+    position: absolute;
+    top: 0;
+    width: calc(100%);
+    box-sizing: border-box;
+
+}
+.Description{
+   position: relative;
+    top: 0;
+    left: 0;
+   width: fit-content;
+    font-size: 1em;
+    font-weight: 700;
+   
+
+}
+.HourlyInfo{
+
+    
+    flex: 0 0 auto; 
+    margin-right: 5px ;
+    height: calc(90% / 6);
+    border-right : 1px rgba(0, 0, 0, 0.276) solid;
+    border-radius: 5px;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    justify-content: center;
+    align-items: center;
+    overflow-y: hidden;
+}
+.HourlyInfo::-webkit-scrollbar{
+    display: none;
+}
+.HourlyTime{
+    font-size: 1em;
+    font-weight: 400;
+    grid-row: 1/2;
+}
+.HourlyTemp{
+    font-size: 1em;
+    font-weight: 400;
+    grid-row: 3/4;
+
+}
+.HourlyIcon{
+   
+    grid-row: 2/3;
+
+    width: 2em;
+    height: 2em;
+    font-size: 1.5em;
+    font-weight: 700;
+
+}
+#DailyContainer{
+    display: flex;
+    position: relative;
+
+    overflow-x: hidden; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 5% 2% 2% 2%;
+    width: 100%; 
+    max-width: 100%;
+    box-sizing: border-box; 
+}
+#dailyContainer::-webkit-scrollbar{
+    display: none;
+    
+}
+#DailyTitle{
+    position: absolute;
+    top: 0;
+    width: calc(100%);
+    box-sizing: border-box;
+    font-size: 1.5em;
+    font-weight: 700;
+
+}
+.DailyInfo{
+    flex: 0 0 auto; 
+    margin-right: 5px ;
+    width: calc(90% / 7);
+    display: grid;
+    grid-template-rows: 1fr 1fr 3fr;
+    justify-content: center;
+    align-items: center;
+    overflow-y: hidden;
+}
+.Date{
+    font-size: 1em;
+    font-weight: 700;
+    grid-row: 1/2;
+}
+.DailyTemp{
+    font-size: 1em;
+    font-weight: 700;
+    grid-row: 2/3;
+
+}
+.DailyIcon{
+   
+    grid-row: 3/4;
+
+    width: 2em;
+    height: 2em;
+    font-size: 1.5em;
+    font-weight: 700;
+
+}
+
+
+
