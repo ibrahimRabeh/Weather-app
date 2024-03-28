@@ -1,7 +1,4 @@
 body{
-    
-  --FontColor: #191919;
-
     font-family:'Playfair Display',sans-serif;
     font-size: 1.2rem;
     display: flex;
@@ -42,7 +39,7 @@ body{
 
 }
 #SearchContainer{
-    align-items: center;
+    align-items:start;
     padding-bottom: 5%;
     flex: 1;
 }
@@ -53,37 +50,35 @@ body{
     height: 2rem;
     border-radius: 5px;
     border: none;
-    border-bottom: 1px solid var(--FontColor) ;
-    background-color: transparent;
+    color: black;
+    border-bottom: 3px solid;
     font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.418);
     font-family: 'Playfair Display',sans-serif;
     cursor: pointer;
 }
 #SearchContainer input:focus{
     outline: none;
-    border: 1px solid var(--FontColor);
+    border: 1px solid ;
 }
 #SearchContainer button{
-   
-    --BackgroundColorDark: #288abf;
     width: fit-content;
     height: 2rem;
     border-radius: 5px;
-    background-color: var(--BackgroundColorDark);
+    background-color: gray;
     cursor: pointer;
 }
 #SearchContainer button:hover{
     
-    animation: fillColorRtoL 0.3s ease-in forwards;
+    animation: fillColorRtoL 0.1s ease-in forwards;
 }
 @keyframes fillColorRtoL{
     0%{
-        background-color: var(--BackgroundColorDark);
+        background-color:grey;
         
     }
     100%{
-        background-color: var(--BackgroundColor);
-        
+        background-color: rgba(255, 255, 255, 0.418);
     }
 
 }
@@ -215,7 +210,6 @@ body{
     overflow-x: auto; 
     justify-content: space-between; 
     align-items: center;
-   
     border-radius: 10%;
     width: 100%; 
     max-width: 100%;
@@ -246,9 +240,10 @@ body{
 
     
     flex: 0 0 auto; 
-    margin-right: 5px ;
+    width: calc(90% / 6);
     height: calc(90% / 6);
     border-right : 1px rgba(0, 0, 0, 0.276) solid;
+    background-color: rgba(128, 128, 128, 0.16);
     border-radius: 5px;
     display: grid;
     grid-template-rows: 1fr 1fr 1fr;
@@ -260,6 +255,8 @@ body{
     display: none;
 }
 .HourlyTime{
+    justify-content: center;
+    align-items: center;
     font-size: 1em;
     font-weight: 400;
     grid-row: 1/2;
@@ -306,11 +303,13 @@ body{
 
 }
 .DailyInfo{
+    border-left: 1px solid rgba(0, 0, 0, 0.557);
+    border-right: 1px solid rgba(0, 0, 0, 0.557);
     flex: 0 0 auto; 
-    margin-right: 5px ;
-    width: calc(90% / 7);
-    display: grid;
-    grid-template-rows: 1fr 1fr 3fr;
+    background-color: rgba(128, 128, 128, 0.16);
+    width: calc(100% / 3);
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     overflow-y: hidden;
@@ -318,24 +317,83 @@ body{
 .Date{
     font-size: 1em;
     font-weight: 700;
-    grid-row: 1/2;
+    flex: 1;
 }
 .DailyTemp{
+  
+    
     font-size: 1em;
     font-weight: 700;
-    grid-row: 2/3;
+   flex: 1;
+}
+.DailyIconContainer{
+    flex: 2;
+    display: flex;
 
+    
 }
 .DailyIcon{
-   
-    grid-row: 3/4;
-
+    flex: 1;
     width: 2em;
     height: 2em;
     font-size: 1.5em;
     font-weight: 700;
-
 }
 
+@media (max-width: 480px) {
+    body {
+        font-size: 1rem; /* Adjust base font size for mobile */
+    }
+    #App {
+        flex-direction: column; /* Stack content vertically */
+        width: 100vw;
+        height: auto;
+    }
+    #LeftContainer, #RightContainer {
+        flex: 1 0 100%; /* Take full width on mobile */
+    }
+    #MainInfoContainer, #HourlyContainer, #DailyContainer #searchContainer {
+        grid-template-columns: 1fr; /* Adjust grid for single column layout */
+        margin-bottom: 20%; /* Adjust spacing */
+     
+    }
+    #SearchContainer {
+        display: flex;
+        flex-direction: row;
+    }
+    #SearchBar {
+        flex: 10; 
+
+    }
+    #SearchButton {
+        flex: 1; 
+    }
+    #MainInfoContainer{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        
+    }
+    #TempAndIconContainer, #ExtraInfo {
+        flex-direction: column; /* Stack info vertically */
+        align-items: center; /* Center-align items for aesthetics */
+    }
+    #SearchContainer input, #SearchContainer button {
+        width: 90%; /* Adjust width for better fit */
+        font-size: 0.9rem; /* Adjust font size for readability */
+    }
+    .HourlyInfo, .DailyInfo {
+        width: 30%; /* Adjust width to fit mobile screen */
+    }
+    /* Adjust font sizes for various components for better readability on small screens */
+    .HourlyTime, .HourlyTemp, .Date, .DailyTemp {
+        font-size: 0.8rem;
+    }
+    #Icon, .HourlyIcon, .DailyIcon {
+        width: 1.5em; /* Adjust icon sizes */
+        height: 1.5em;
+    }
+}
 
 

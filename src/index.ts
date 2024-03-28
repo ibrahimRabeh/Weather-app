@@ -1,18 +1,21 @@
 
 import API from "./API";
 import "./style.scss";
-async function fetchCity() {
-  let City = await API("texas");
-  mainInfo(City);
-  Days(City);
-  BackgroundAndFont(City);
-
-}
+let city = "London";
 localStorage.clear();
 let cachecities: any = [];
 if (localStorage.getItem("cities")) {
   cachecities = JSON.parse(localStorage.getItem("cities"));
+  city = cachecities[cachecities.length - 1].location.name;
   
+}
+async function fetchCity() {
+  let City = await API(city);
+  mainInfo(City);
+  updateCache(City.location.name, City);
+  Days(City);
+  BackgroundAndFont(City);
+
 }
 
 fetchCity();
@@ -20,6 +23,7 @@ fetchCity();
 function mainInfo(City: any) {
   console.log(City);
   const CityNameS: string = City.location.name;
+  let currentHour = parseInt(City.current.last_updated.split(" ")[1].split(":")[0]);
 
   const CityName = document.getElementById("City") as HTMLHeadingElement;
   CityName.innerHTML = CityNameS;
@@ -28,7 +32,7 @@ function mainInfo(City: any) {
   const Temp = document.getElementById("Temp") as HTMLHeadingElement;
   Temp.innerHTML = City.forecast.forecastday[0].day.avgtemp_c + "°C";
   const svg = document.getElementById("Icon") as HTMLImageElement;
-  svg.src = "https:" + City.forecast.forecastday[0].day.condition.icon;
+  svg.src = "https:" + City.forecast.forecastday[0].hour[(currentHour+1)%24].condition.icon;
   const Humidity = document.getElementById("Humidity") as HTMLHeadingElement;
   Humidity.innerHTML = "H: "+ City.current.humidity + "%";
   const ChanceOfRain = document.getElementById(
@@ -36,22 +40,26 @@ function mainInfo(City: any) {
   ) as HTMLHeadingElement;
   ChanceOfRain.innerHTML =
     "R:" + City.forecast.forecastday[0].day.daily_chance_of_rain + "%";
-  if (cachecities.length > 5) {
+
+  hours(City);
+}
+function updateCache(CityName: any, City: any) {
+  if (cachecities.length >= 5) {
     console.log("more than 5");
-    cachecities.pop();
+    cachecities.shift();
   }
 
   if (
     !cachecities.some(
       (cachedCity: any) => cachedCity.location.name === CityName
     )
-  ) {
+  )
+  {
     cachecities.push(City);
     localStorage.setItem("cities", JSON.stringify(cachecities));
   }
 
   console.log(cachecities);
-  hours(City);
 }
 function hours(City: any) {
   const hours = document.getElementById("HourlyContainer") as HTMLDivElement;
@@ -65,10 +73,20 @@ function hours(City: any) {
     hourTime = City.forecast.forecastday[0].hour[++i].time
       .split(" ")[1]
       .split(":")[0];
+      
    
   }
+  let dayIndex = 0;
+  let NewDayHoursIndex = 0;
 
-  while (i < 24) {
+
+  while (NewDayHoursIndex < 23) {
+    if (i === 23) {
+      i = 0;
+      dayIndex++;
+    }
+    NewDayHoursIndex++;
+
     const hour = document.createElement("div");
     hour.classList.add("HourlyInfo");
     const hourTime = document.createElement("h3");
@@ -78,7 +96,7 @@ function hours(City: any) {
     const hourIcon = document.createElement("img");
     hourIcon.classList.add("HourlyIcon");
     const time = parseInt(
-      City.forecast.forecastday[0].hour[i].time.split(" ")[1].split(":")[0]
+      City.forecast.forecastday[dayIndex].hour[i++].time.split(" ")[1].split(":")[0]
     );
     if (time ===parseInt(City.current.last_updated.split(" ")[1].split(":")[0])) {
       hourTime.innerHTML = "Now";
@@ -95,14 +113,14 @@ function hours(City: any) {
     hourTime.innerHTML = twelveHourTime + ":00 AM";
     }
   }
-    hourTemp.innerHTML = City.forecast.forecastday[0].hour[i].temp_c + "°C";
+    hourTemp.innerHTML = City.forecast.forecastday[dayIndex].hour[i].temp_c + "°C";
     hourIcon.src =
-      "https:" + City.forecast.forecastday[0].hour[i].condition.icon;
+      "https:" + City.forecast.forecastday[dayIndex].hour[i].condition.icon;
     hour.appendChild(hourTime);
     hour.appendChild(hourTemp);
     hour.appendChild(hourIcon);
     hours.appendChild(hour); 
-    i++;
+    
   }
 }
 function Days(City: any) {
@@ -113,29 +131,35 @@ function Days(City: any) {
     const dayContainer = document.createElement("div");
     dayContainer.classList.add("DailyInfo");
     const dayName = document.createElement("div");
-    dayName.innerText = day.date;
+    dayName.innerText = getDayName(day.date);
     const dayTemp = document.createElement("div");
     dayTemp.innerText = day.day.avgtemp_c + "°C";
     dayTemp.classList.add("DailyTemp");
+    const dayIconContainer = document.createElement("div");
+    dayIconContainer.classList.add("DailyIconContainer");
     const dayIcon = document.createElement("img");
     dayIcon.src = "https:" + day.day.condition.icon;
     dayIcon.classList.add("DailyIcon");
     const nightIcon = document.createElement("img");
     nightIcon.src = "https:" + day.day.condition.icon;
     nightIcon.classList.add("DailyIcon");
-    const nightTemp = document.createElement("div");
-    nightTemp.innerText = day.day.avgtemp_c + "°C";
-    nightTemp.classList.add("DailyTemp");
     dayContainer.appendChild(dayName);
-    dayContainer.appendChild(dayIcon);
     dayContainer.appendChild(dayTemp);
-    dayContainer.appendChild(nightIcon);
-    dayContainer.appendChild(nightTemp);
+    dayIconContainer.appendChild(dayIcon);
+    dayIconContainer.appendChild(nightIcon);
+    dayContainer.appendChild(dayIconContainer);
+    
+    
     console.log("it works");
     days.appendChild(dayContainer);
     i++;
     
   });   
+}
+function getDayName(dateString: string) {
+  const date = new Date(dateString);
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  return days[date.getDay()];
 }
 const searchbtn = document.getElementById("SearchButton") as HTMLFormElement;
 searchbtn.addEventListener("click", (e) => {
@@ -168,6 +192,7 @@ function searchCity() {
   });
   API(City).then((data:any) => {
     mainInfo(data);
+    updateCache(data.location.name, data);
     BackgroundAndFont(data);
   });
 }
@@ -189,28 +214,41 @@ function BackgroundAndFont(City: any) {
   const weather = City.forecast.forecastday[0].day.condition.text;
   const Sunset = City.forecast.forecastday[0].astro.sunset;
   console.log(Sunset);
-  const CurrentTime = City.location.localtime.split(" ")[1];
-  if (weather === "Sunny" || weather === "Clear") {
-    console.log("sunny");
-    body.style.background =
-      " linear-gradient(0deg, rgba(255,255,255,150) -30%, rgba(12,123,255,1) 100%)";
-  } else if (
-    weather.includes("rain") ||
-    weather.includes("Overcast") ||
-    weather.includes("Mist") ||
-    weather.includes("Fog")
-  ) {
-    console.log("rainy");
-    body.style.background =
-      "linear-gradient(0deg, rgba(119,136,153,1) 0%, rgba(192,192,192,1) 100%)";
-  } else {
-    console.log("night");
-    //give me a dark blue gray gradient indacating night
-    body.style.background =
-      "linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(12,123,255,1) 100%)";
-      //change the font to white if the time is night i have it as a var called 
-      const font = document.getElementById("font") as HTMLHeadingElement;
+  let currentHour = parseInt(City.current.last_updated.split(" ")[1].split(":")[0]);
+  let weatherCondition = City.forecast.forecastday[0].hour[currentHour].condition.text;
+  let weatherIcon = City.forecast.forecastday[0].hour[currentHour].condition.icon;
+  let font = "rgb(255,255,255)";
+  let mainColor = "rgb(20,20,255)";
+  let secondaryColor = "rgb(200,200,200)";
 
+  if (weatherIcon.includes("day")) {
+    font = "rgb(10,10,10)";
+    mainColor = "rgb(100,100,255)";
+  }
+
+  if (weatherCondition === "Clear") {
+     secondaryColor = "rgb(255,255,255)";
+     if (weatherIcon.includes("night")) 
+       secondaryColor = "rgb(0,0,0)";
 
   }
+  body.style.background = `linear-gradient(${mainColor} 0%, ${secondaryColor} 100%)`;
+  body.style.background = `repeating-linear-gradient(
+    45deg,
+    
+    ${mainColor} 2px,
+    
+    ${secondaryColor} 4px
+   
+  )`;
+    body.style.color = font;
+
+
+
+
+
+  
+  
+
+  
 }

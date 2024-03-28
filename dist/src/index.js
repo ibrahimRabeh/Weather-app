@@ -98,7 +98,14 @@ function hours(City) {
             .split(" ")[1]
             .split(":")[0];
     }
-    while (i < 24) {
+    var dayIndex = 0;
+    var NewDayHoursIndex = 0;
+    while (NewDayHoursIndex < 24) {
+        if (i === 24) {
+            i = 0;
+            dayIndex++;
+        }
+        NewDayHoursIndex++;
         var hour = document.createElement("div");
         hour.classList.add("HourlyInfo");
         var hourTime_1 = document.createElement("h3");
@@ -107,7 +114,7 @@ function hours(City) {
         hourTemp.classList.add("HourlyTemp");
         var hourIcon = document.createElement("img");
         hourIcon.classList.add("HourlyIcon");
-        var time = parseInt(City.forecast.forecastday[0].hour[i].time.split(" ")[1].split(":")[0]);
+        var time = parseInt(City.forecast.forecastday[dayIndex].hour[i++].time.split(" ")[1].split(":")[0]);
         if (time === parseInt(City.current.last_updated.split(" ")[1].split(":")[0])) {
             hourTime_1.innerHTML = "Now";
         }
@@ -123,14 +130,13 @@ function hours(City) {
                 hourTime_1.innerHTML = twelveHourTime + ":00 AM";
             }
         }
-        hourTemp.innerHTML = City.forecast.forecastday[0].hour[i].temp_c + "°C";
+        hourTemp.innerHTML = City.forecast.forecastday[dayIndex].hour[i].temp_c + "°C";
         hourIcon.src =
-            "https:" + City.forecast.forecastday[0].hour[i].condition.icon;
+            "https:" + City.forecast.forecastday[dayIndex].hour[i].condition.icon;
         hour.appendChild(hourTime_1);
         hour.appendChild(hourTemp);
         hour.appendChild(hourIcon);
         hours.appendChild(hour);
-        i++;
     }
 }
 function Days(City) {
